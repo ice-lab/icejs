@@ -16,5 +16,5 @@ export interface IInterceptors {
 }
 
 export interface IRequest extends AxiosRequestConfig {
-  interceptors: IInterceptors;
+  interceptors?: IInterceptors;
 }

@@ -1,6 +1,7 @@
+import { AxiosRequestConfig } from 'axios'
 import axiosInstance from './axiosInstance'
 
-async function request(options) {
+async function request(options: AxiosRequestConfig) {
   try {
     const response = await axiosInstance(options)
     return response.data
