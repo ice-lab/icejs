@@ -27,9 +27,10 @@ export default (api) => {
     return fse.existsSync(modulePath) ? formatPath(modulePath) : false;
   }).filter(Boolean);
 
-  // modify entry to src/app
-  modifyUserConfig('entry', 'src/app');
-
+  if (!userConfig.entry) {
+    // modify default entry to src/app
+    modifyUserConfig('entry', 'src/app');
+  }
 
   onGetWebpackConfig((config: any) => {
     config.resolve.alias.set('ice$', path.join(iceTempPath, 'index.ts'));
