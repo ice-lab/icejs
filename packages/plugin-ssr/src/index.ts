@@ -83,6 +83,7 @@ const plugin = async (api): Promise<void> => {
     }
 
     if (command === 'build') {
+      config.optimization.minimize(false)
       onHook('after.build.compile', () => {
         const serverFilePath = path.join(serverDir, serverFilename)
         const htmlFilePath = path.join(buildDir, 'index.html')
