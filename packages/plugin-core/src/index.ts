@@ -9,7 +9,7 @@ import formatPath from './utils/formatPath'
 
 export default (api) => {
   const { onHook, onGetWebpackConfig, registerMethod, registerUserConfig, context, getAllPlugin, setValue, modifyUserConfig } = api
-  const { rootDir, command, userConfig } = context;
+  const { rootDir, command, userConfig, webpack } = context;
 
   const iceTempPath = path.join(rootDir, '.ice');
   setValue('ICE_TEMP', iceTempPath);
@@ -38,6 +38,14 @@ export default (api) => {
 
     // default alias of @/
     config.resolve.alias.set('@', path.join(rootDir, 'src'));
+
+    const defineVariables = {
+      'process.env.__IS_SERVER__': false,
+      'process.env.__SSR_ENABLED__': userConfig.ssr
+    };
+    config
+      .plugin('DefinePlugin')
+      .tap(([args]) => [{ ...args, ...defineVariables }]);
 
     // add alias of basic dependencies
     const basicDependencies = [
@@ -79,7 +87,7 @@ export default (api) => {
   })
 
   const buildConfig = {}
-  const BUILD_CONFIG_MAP = ['router', 'store']
+  const BUILD_CONFIG_MAP = ['router', 'store', 'ssr']
   Object.keys(userConfig).forEach(key => {
     if (BUILD_CONFIG_MAP.includes(key)) {
       buildConfig[key] = userConfig[key]
@@ -112,6 +120,12 @@ export default (api) => {
   // register store in build.json
   registerUserConfig({
     name: 'store',
+    validation: 'boolean',
+  });
+
+  // register ssr in build.json
+  registerUserConfig({
+    name: 'ssr',
     validation: 'boolean',
   });
 

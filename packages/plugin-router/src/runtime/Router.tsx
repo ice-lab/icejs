@@ -4,6 +4,7 @@ import {
   HashRouter,
   BrowserRouter,
   MemoryRouter,
+  StaticRouter,
   Switch,
   Route,
   Redirect,
@@ -54,6 +55,7 @@ export function Router(props: RouterProps) {
   const typeToComponent = {
     hash: HashRouter,
     browser: BrowserRouter,
+    static: StaticRouter,
     // for test case
     memory: MemoryRouter,
   };
@@ -80,17 +82,24 @@ function Routes({ routes, fallback }: RoutesProps) {
             return <Redirect key={id} from={route.path} to={redirect} {...others} />;
           } else {
             const { component: RouteComponent, ...others } = route;
+            // React does not currently support Suspense when components are being server-side rendered
+            // process.env.__IS_SERVER__ = React.RenderToString()
+            // process.env.__SSR_ENABLED__ = React.hydrate()
+            const RenderComponent = process.env.__IS_SERVER__ || process.env.__SSR_ENABLED__
+              ? (props: RouteComponentProps) => <RouteComponent {...props} />
+              : (props: RouteComponentProps) => {
+                return (
+                  <React.Suspense fallback={fallback || <div>loading</div>}>
+                    <RouteComponent {...props} />
+                  </React.Suspense>
+                );
+              }
+
             return (
               <Route
                 key={id}
                 {...others}
-                render={(props: RouteComponentProps) => {
-                  return (
-                    <React.Suspense fallback={fallback || <div>loading</div>}>
-                      <RouteComponent {...props} />
-                    </React.Suspense>
-                  );
-                }}
+                render={RenderComponent}
               />
             );
           }
