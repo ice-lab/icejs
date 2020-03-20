@@ -10,7 +10,7 @@ import {
 
   RouteComponentProps
 } from 'react-router-dom';
-import { RoutesProps, RouterProps, IRouteWrapper, IDynamicImportComponent  } from '../types'
+import { RoutesProps, RouterProps, IRouteWrapper, IDynamicImportComponent, RouteItemProps, IRenderRouteProps } from '../types'
 
 function wrapperRoute(component, routerWrappers) {
   return (routerWrappers || []).reduce((acc, curr) => {
@@ -35,6 +35,20 @@ function getRouteComponent(component, routerWrappers?: IRouteWrapper[]) {
   })) : wrapperRoute(component, routerWrappers);
 }
 
+function parseRoutes(routes: RouteItemProps[]) {
+  return routes.map((route) => {
+    const { children, component, routeWrappers, ...others } = route;
+    const parsedRoute: IRenderRouteProps = { ...others };
+    if (component) {
+      parsedRoute.component = getRouteComponent(component, children ? [] : routeWrappers);
+    }
+    if (children) {
+      parsedRoute.children = parseRoutes(children);
+    }
+    return parsedRoute;
+  });
+}
+
 export function Router(props: RouterProps) {
   const { type = 'hash', routes, fallback, ...others } = props;
   const typeToComponent = {
@@ -45,10 +59,11 @@ export function Router(props: RouterProps) {
   };
 
   const RouterComponent: React.ComponentType<any> = typeToComponent[type];
-
+  // parse routes before render
+  const parsedRoutes = parseRoutes(routes);
   return (
     <RouterComponent {...others}>
-      <Routes routes={routes} fallback={fallback}/>
+      <Routes routes={parsedRoutes} fallback={fallback}/>
     </RouterComponent>
   );
 }
@@ -64,8 +79,7 @@ function Routes({ routes, fallback }: RoutesProps) {
             const { redirect, ...others } = route;
             return <Redirect key={id} from={route.path} to={redirect} {...others} />;
           } else {
-            const { routeWrappers, component, ...others } = route;
-            const RouteComponent = getRouteComponent(component, routeWrappers || []);
+            const { component: RouteComponent, ...others } = route;
             return (
               <Route
                 key={id}
@@ -81,8 +95,7 @@ function Routes({ routes, fallback }: RoutesProps) {
             );
           }
         } else {
-          const { component, children, ...others } = route;
-          const LayoutComponent = getRouteComponent(component);
+          const { component: LayoutComponent, children, ...others } = route;
           const RenderComponent = (props: RouteComponentProps) => (
             <LayoutComponent {...props}>
               <Routes routes={children} />
