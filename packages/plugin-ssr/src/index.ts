@@ -38,6 +38,13 @@ const plugin = async (api): Promise<void> => {
       }])
       .end()
 
+    config.plugins.delete('MiniCssExtractPlugin');
+    ['scss', 'scss-module', 'css', 'css-module', 'less', 'less-module'].forEach((rule) => {
+      if (config.module.rules.get(rule)) {
+        config.module.rule(rule).uses.delete('MiniCssExtractPlugin.loader')
+      }
+    })
+
     config.output
       .path(serverDir)
       .filename(serverFilename)
