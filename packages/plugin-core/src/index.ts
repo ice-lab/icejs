@@ -9,7 +9,7 @@ import formatPath from './utils/formatPath'
 
 export default (api) => {
   const { onHook, onGetWebpackConfig, registerMethod, registerUserConfig, context, getAllPlugin, setValue, modifyUserConfig } = api
-  const { rootDir, command, userConfig, webpack } = context;
+  const { rootDir, command, userConfig } = context;
 
   const iceTempPath = path.join(rootDir, '.ice');
   setValue('ICE_TEMP', iceTempPath);
