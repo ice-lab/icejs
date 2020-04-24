@@ -63,6 +63,5 @@ module.exports = {
   compileDependencies: 'array',
   babelPlugins: 'array',
   babelPresets: 'array',
-  eslintLoaderOptions: 'object',
-  progressBar: 'object'
+  eslintLoaderOptions: 'object'
 };
