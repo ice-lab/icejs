@@ -19,3 +19,4 @@ examples/*/.ice
 docs/.vuepress/dist/
 
 build
+coverage
