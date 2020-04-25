@@ -9,6 +9,7 @@ const validation = require('./config/validation');
 const optionConfig = require('./config/option.config');
 const getFilePath = require('./utils/getFilePath');
 const collect = require('./utils/collect');
+const setWebpackbar = require('./config/setWebpackbar');
 
 module.exports = ({
   onGetWebpackConfig,
@@ -55,6 +56,9 @@ module.exports = ({
   const config = getWebpackConfig(mode);
   // setup DefinePlugin, HtmlWebpackPlugin and  CopyWebpackPlugin out of onGetWebpackConfig
   // in case of registerUserConfig will be excute before onGetWebpackConfig
+
+  // set webpackbar
+  setWebpackbar(config);
 
   // DefinePlugin
   const defineVariables = {
