@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  Build:
+  Coverage:
 
     runs-on: ubuntu-latest
 
@@ -17,7 +17,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm run setup
-      - run: npm run dependency:check
+      - run: |
+          npm install
+          npm run test
+          npm run coverage
         env:
           CI: true
