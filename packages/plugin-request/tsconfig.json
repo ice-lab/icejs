@@ -5,10 +5,13 @@
     "rootDir": "src",
     "outDir": "lib",
     "paths": {
-      "$ice/axiosInstance": ["./src/_axiosInstance"]
+      "$ice/axiosInstance": [
+        "./src/_axiosInstance"
+      ]
     }
   },
   "exclude": [
-    "request/*"
+    "request/*",
+    "__test__/*"
   ]
 }

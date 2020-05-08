@@ -20,3 +20,5 @@ docs/.vuepress/dist/
 
 build
 coverage
+
+.idea

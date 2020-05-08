@@ -9,6 +9,7 @@ const commonRules = {
   "prefer-object-spread": 0,
   // TODO: open rule indent, consider of  MemberExpression
   "indent": 0,
+  "@typescript-eslint/no-var-requires": 0,
 };
 
 const jsRules = deepmerge(eslint, {
@@ -36,4 +37,7 @@ module.exports = {
       files: ['**/*.ts', '**/*.tsx'],
     },
   ],
+  env: {
+    "jest": true
+  }
 };
